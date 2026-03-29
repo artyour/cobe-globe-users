@@ -1,61 +1,72 @@
+cat > index.html << 'EOF'
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Cobe Globe Users</title>
-  <style>
-    body { margin: 0; background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    canvas { border: 1px solid #fff; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Globe Cobe Users</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #111;
+    height: 100%;
+    width: 100%;
+  }
+  canvas { display: block; }
+</style>
 </head>
 <body>
-  <canvas id="cobe" width="1000" height="1000" style="width:500px;height:500px"></canvas>
+<canvas id="cobe" style="width: 100vw; height: 100vh;" width="1000" height="1000"></canvas>
 
-  <!-- Cobe UMD via CDN -->
-  <script src="https://unpkg.com/cobe/dist/cobe.min.js"></script>
+<!-- Cobe UMD via CDN -->
+<script src="https://unpkg.com/cobe/dist/cobe.min.js"></script>
 
-  <!-- IPAPI pour géolocaliser l'utilisateur -->
-  <script>
-    async function getUserLocation() {
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        const data = await res.json();
-        return [data.latitude, data.longitude];
-      } catch(e) {
-        console.error('Erreur IPAPI', e);
-        return [0,0]; // fallback
-      }
+<script>
+(async () => {
+  // Récupérer la position de l'utilisateur via IPAPI
+  async function getUserLocation() {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      return [data.latitude, data.longitude];
+    } catch (e) {
+      console.error(e);
+      return [0,0]; // fallback
     }
+  }
 
-    (async () => {
-      const userLoc = await getUserLocation();
-      let phi = 0;
-      const canvas = document.getElementById("cobe");
+  const userLoc = await getUserLocation();
+  let phi = 0;
 
-      const globe = Cobe.createGlobe(canvas, {
-        devicePixelRatio: 2,
-        width: 1000,
-        height: 1000,
-        phi: 0,
-        theta: 0,
-        dark: 0,
-        diffuse: 1.2,
-        scale: 1,
-        mapSamples: 16000,
-        mapBrightness: 6,
-        baseColor: [0.3, 0.3, 0.3],
-        markerColor: [1, 0.5, 1],
-        glowColor: [1, 1, 1],
-        markers: [
-          { location: userLoc, size: 0.05, color: [1, 0, 0] }
-        ],
-        arcs: [],
-        onRender: (state) => {
-          state.phi = phi;
-          phi += 0.01;
-        }
-      });
-    })();
-  </script>
+  const canvas = document.getElementById("cobe");
+
+  const globe = Cobe.createGlobe(canvas, {
+    devicePixelRatio: 2,
+    width: 1000,
+    height: 1000,
+    phi: 0,
+    theta: 0,
+    dark: 0,
+    diffuse: 1.2,
+    scale: 1,
+    mapSamples: 16000,
+    mapBrightness: 6,
+    baseColor: [0.3, 0.3, 0.3],
+    markerColor: [1, 0.5, 1],
+    glowColor: [1, 1, 1],
+    markers: [
+      { location: userLoc, size: 0.05, color: [1, 0, 0] }
+    ],
+    arcs: [],
+    onRender: (state) => {
+      state.phi = phi;
+      phi += 0.01;
+    }
+  });
+})();
+</script>
 </body>
 </html>
+EOF
