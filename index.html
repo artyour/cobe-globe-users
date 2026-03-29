@@ -4,7 +4,7 @@ cat > index.html << 'EOF'
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Globe Cobe Users</title>
+<title>Globe Cobe Test</title>
 <style>
   body, html {
     margin: 0;
@@ -24,48 +24,36 @@ cat > index.html << 'EOF'
 <script src="https://unpkg.com/cobe/dist/cobe.min.js"></script>
 
 <script>
-(async () => {
-  // Récupérer la position de l'utilisateur via IPAPI
-  async function getUserLocation() {
-    try {
-      const res = await fetch('https://ipapi.co/json/');
-      const data = await res.json();
-      return [data.latitude, data.longitude];
-    } catch (e) {
-      console.error(e);
-      return [0,0]; // fallback
-    }
+let phi = 0;
+const canvas = document.getElementById("cobe");
+
+// Coordonnées fixes pour tester
+const testMarkers = [
+  { location: [37.7749, -122.4194], size: 0.05, color: [1,0,0] }, // San Francisco
+  { location: [48.8566, 2.3522], size: 0.05, color: [0,1,0] },     // Paris
+];
+
+const globe = Cobe.createGlobe(canvas, {
+  devicePixelRatio: 2,
+  width: 1000,
+  height: 1000,
+  phi: 0,
+  theta: 0,
+  dark: 0,
+  diffuse: 1.2,
+  scale: 1,
+  mapSamples: 16000,
+  mapBrightness: 6,
+  baseColor: [0.3, 0.3, 0.3],
+  markerColor: [1, 0.5, 1],
+  glowColor: [1, 1, 1],
+  markers: testMarkers,
+  arcs: [],
+  onRender: (state) => {
+    state.phi = phi;
+    phi += 0.01;
   }
-
-  const userLoc = await getUserLocation();
-  let phi = 0;
-
-  const canvas = document.getElementById("cobe");
-
-  const globe = Cobe.createGlobe(canvas, {
-    devicePixelRatio: 2,
-    width: 1000,
-    height: 1000,
-    phi: 0,
-    theta: 0,
-    dark: 0,
-    diffuse: 1.2,
-    scale: 1,
-    mapSamples: 16000,
-    mapBrightness: 6,
-    baseColor: [0.3, 0.3, 0.3],
-    markerColor: [1, 0.5, 1],
-    glowColor: [1, 1, 1],
-    markers: [
-      { location: userLoc, size: 0.05, color: [1, 0, 0] }
-    ],
-    arcs: [],
-    onRender: (state) => {
-      state.phi = phi;
-      phi += 0.01;
-    }
-  });
-})();
+});
 </script>
 </body>
 </html>
