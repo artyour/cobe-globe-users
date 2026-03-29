@@ -4,15 +4,15 @@ cat > index.html << 'EOF'
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Globe Cobe Test</title>
+<title>Globe Cobe Simple</title>
 <style>
   body, html {
     margin: 0;
     padding: 0;
     overflow: hidden;
     background: #111;
-    height: 100%;
     width: 100%;
+    height: 100%;
   }
   canvas { display: block; }
 </style>
@@ -27,13 +27,7 @@ cat > index.html << 'EOF'
 let phi = 0;
 const canvas = document.getElementById("cobe");
 
-// Coordonnées fixes pour tester
-const testMarkers = [
-  { location: [37.7749, -122.4194], size: 0.05, color: [1,0,0] }, // San Francisco
-  { location: [48.8566, 2.3522], size: 0.05, color: [0,1,0] },     // Paris
-];
-
-const globe = Cobe.createGlobe(canvas, {
+Cobe.createGlobe(canvas, {
   devicePixelRatio: 2,
   width: 1000,
   height: 1000,
@@ -45,9 +39,8 @@ const globe = Cobe.createGlobe(canvas, {
   mapSamples: 16000,
   mapBrightness: 6,
   baseColor: [0.3, 0.3, 0.3],
-  markerColor: [1, 0.5, 1],
   glowColor: [1, 1, 1],
-  markers: testMarkers,
+  markers: [],  // aucun marker
   arcs: [],
   onRender: (state) => {
     state.phi = phi;
